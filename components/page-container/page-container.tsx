@@ -91,7 +91,11 @@ const PageContainer = (props: any) => {
     setDocHeight()
 
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    screen.orientation.addEventListener('change', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      screen.orientation.removeEventListener('change', handleResize)
+    }
   }, [onCloseLeftMenu, onCloseRightMenu])
 
   useEffect(() => {
@@ -100,25 +104,24 @@ const PageContainer = (props: any) => {
   }, [])
 
   return (
-    <Box
-      pt="5px"
-      bg="black"
-      position="relative"
-      h="calc(var(--vh, 1vh) * 100)"
-      overflow="hidden"
-    >
+    <>
       <Flex
         maxW={{ base: '100vw', md: '48em', lg: '62em', xl: '80em' }}
-        minH="calc(var(--vh, 1vh) * 100)"
-        pos="relative"
         mx="auto"
+        bg="green"
+        position="relative"
+        h={{ base: '100%', md: 'initial' }}
+        minH={{ base: 'initial', md: '100vh' }}
+        overflow={{ base: 'hidden', md: 'visible' }}
       >
         <Box
           as={motion.div}
           w="calc(90% - 10px)"
-          minH="100vh"
+          maxH={{ base: 'initial', md: '100vh' }}
+          minH={{ base: '100%', md: 'initial' }}
           bg="gray.200"
           borderTopRadius="15px"
+          top="0"
           ml="5px"
           order="1"
           position={{ base: 'absolute', md: 'sticky' }}
@@ -169,8 +172,8 @@ const PageContainer = (props: any) => {
         </Box>
         <Box
           as={motion.div}
-          minH="100%"
-          maxH="100%"
+          minH={{ base: 'initial', md: '100vh' }}
+          h={{ base: '100%', md: 'initial' }}
           borderTopRadius="15px"
           w="100%"
           bg="white"
@@ -202,12 +205,10 @@ const PageContainer = (props: any) => {
           <Box
             w="100%"
             h="40px"
-            border="1px"
-            borderColor="green"
             position="fixed"
             bg="white"
             borderTopRadius="15px"
-            top="0"
+            display={{ base: 'block', md: 'none' }}
           >
             <Box
               display={{ base: 'block', md: 'none' }}
@@ -232,26 +233,30 @@ const PageContainer = (props: any) => {
 
           <Box
             as={motion.div}
+            h="100%"
             w="100%"
-            maxH="100vh"
             p="50px"
-            overflow="scroll"
+            overflow={{ base: 'scroll', md: 'initial' }}
             initial={{ y: -16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
           >
             {children}
+
+            <Box>footer</Box>
           </Box>
         </Box>
 
         <Box
           as={motion.div}
-          minH="100vh"
+          maxH={{ base: 'initial', md: '100vh' }}
+          minH={{ base: '100%', md: 'initial' }}
           w="calc(90% - 10px)"
           mr="5px"
           bg="gray.200"
           order="3"
           borderTopRadius="15px"
-          pos={{ base: 'absolute', md: 'static' }}
+          pos={{ base: 'absolute', md: 'sticky' }}
+          top="0"
           right="0"
           zIndex="5"
           initial="init"
@@ -272,35 +277,36 @@ const PageContainer = (props: any) => {
         >
           hola
         </Box>
+
+        <Box
+          as={motion.div}
+          display={{ base: 'block', md: 'none' }}
+          zIndex="20"
+          h="50px"
+          bg="black"
+          pos="absolute"
+          left="0"
+          right="0"
+          bottom="0"
+          borderTopRadius="md"
+          variants={{
+            init: {
+              y: '100%',
+            },
+            right: {
+              y: '0',
+              transition,
+            },
+            center: {
+              y: '100%',
+              transition,
+            },
+          }}
+          initial="init"
+          animate={controls}
+        ></Box>
       </Flex>
-      <Box
-        as={motion.div}
-        display={{ base: 'block', md: 'none' }}
-        zIndex="20"
-        h="50px"
-        bg="black"
-        pos="absolute"
-        left="0"
-        right="0"
-        bottom="0"
-        borderTopRadius="md"
-        variants={{
-          init: {
-            y: '100%',
-          },
-          right: {
-            y: '0',
-            transition,
-          },
-          center: {
-            y: '100%',
-            transition,
-          },
-        }}
-        initial="init"
-        animate={controls}
-      ></Box>
-    </Box>
+    </>
   )
 }
 
