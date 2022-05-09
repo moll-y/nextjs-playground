@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { useEffect } from 'react'
+
 import { useRouter } from 'next/router'
 import {
   Box,
@@ -6,12 +7,14 @@ import {
   Flex,
   useDisclosure,
   useBreakpointValue,
-  IconButton,
 } from '@chakra-ui/react'
-import { motion, useAnimation, useDragControls } from 'framer-motion'
+import { motion, useAnimation } from 'framer-motion'
 
-import React, { useEffect } from 'react'
-import { HamburgerIcon, AttachmentIcon } from '@chakra-ui/icons'
+import useMobileViewportHeight from 'hooks/use-mobile-viewport-height'
+import AsideMenuNavbar from 'components/page-container/aside-menu-navbar'
+import AsideMenu from 'components/page-container/aside-menu'
+import Sidebar from 'components/page-container/sidebar'
+import Navbar from 'components/page-container/navbar'
 
 const transition = {
   type: 'spring',
@@ -19,27 +22,13 @@ const transition = {
   stiffness: 200,
 }
 
-const MyButton = React.forwardRef(({ onClick, href }, ref) => {
-  return (
-    <Box
-      href={href}
-      as={motion.div}
-      onViewportEnter={() => {
-        console.log('yeah')
-      }}
-    >
-      <a onClick={onClick} ref={ref}>
-        Click Me
-      </a>
-    </Box>
-  )
-})
-
-const PageContainer = (props: any) => {
+function PageContainer(props: any) {
   const { children } = props
   const isMobile = useBreakpointValue({ base: true, md: false })
+  const mvh = useMobileViewportHeight()
   const controls = useAnimation()
   const router = useRouter()
+
   const {
     isOpen: isOpenLeftMenu,
     onToggle: onToggleLeftMenu,
@@ -64,249 +53,168 @@ const PageContainer = (props: any) => {
       controls.start('center')
     },
   })
-  const handleClick = () => {
-    if (isOpenLeftMenu || isOpenRightMenu) {
+
+  const handleCloseMenu = () => {
+    if (isOpenLeftMenu) {
+      controls.start('center')
+      onCloseLeftMenu()
+    }
+
+    if (isOpenRightMenu) {
       controls.start('center')
       onCloseRightMenu()
-      onCloseLeftMenu()
     }
   }
 
-  function setDocHeight() {
-    console.log('hola')
-    document.documentElement.style.setProperty(
-      '--vh',
-      `${window.innerHeight / 100}px`
-    )
-  }
-
-  // TODO: resize event is triggered in mobile for no reason (?)
-  useEffect(() => {
-    function handleResize() {
+  const handleMenuItemClick = (href: string) => {
+    if (!isMobile) {
+      router.push(href)
+    } else {
       onCloseLeftMenu()
       onCloseRightMenu()
-      setDocHeight()
-      console.log('resizing')
+      controls.start('center').then(() => router.push(href))
     }
-    setDocHeight()
-
-    window.addEventListener('resize', handleResize)
-    screen.orientation.addEventListener('change', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      screen.orientation.removeEventListener('change', handleResize)
-    }
-  }, [onCloseLeftMenu, onCloseRightMenu])
+  }
 
   useEffect(() => {
-    router.prefetch('/about')
-    router.prefetch('/')
-  }, [])
+    if (!isMobile) {
+      onCloseRightMenu()
+      onCloseLeftMenu()
+    }
+  }, [isMobile, onCloseLeftMenu, onCloseRightMenu])
 
   return (
-    <>
-      <Flex
-        maxW={{ base: '100vw', md: '48em', lg: '62em', xl: '80em' }}
-        mx="auto"
-        bg="green"
-        position="relative"
-        h={{ base: '100%', md: 'initial' }}
-        minH={{ base: 'initial', md: '100vh' }}
-        overflow={{ base: 'hidden', md: 'visible' }}
+    <Flex
+      overflow={{ base: 'hidden', md: 'visible' }}
+      maxW={{ base: '100vw', md: '48em', lg: '62em', xl: '80em' }}
+      minH={{ base: 'initial', md: '100vh' }}
+      h={{ base: mvh(100), md: 'initial' }}
+      mx="auto"
+      bg="green"
+      pos="relative"
+    >
+      <AsideMenu
+        order={1}
+        left={0}
+        animate={controls}
+        variants={{
+          init: {
+            x: 0,
+          },
+          center: {
+            x: 0,
+            transition,
+          },
+          left: {
+            x: '-90%',
+            transition,
+          },
+        }}
       >
+        <Sidebar onMenuItemClick={handleMenuItemClick} />
+      </AsideMenu>
+
+      <Box
+        as={motion.div}
+        minH={{ base: 'initial', md: '100vh' }}
+        h={{ base: '100%', md: 'initial' }}
+        mt={{ base: '5px', md: 0 }}
+        pos={{ base: 'absolute', md: 'static' }}
+        borderTopRadius={{ base: 'lg', md: 0 }}
+        top="0"
+        w="100%"
+        bg="white"
+        order="2"
+        zIndex="10"
+        variants={{
+          init: {
+            x: 0,
+          },
+          center: {
+            x: 0,
+            transition,
+          },
+          right: {
+            x: '90%',
+            transition,
+          },
+          left: {
+            x: '-90%',
+            transition,
+          },
+        }}
+        initial="init"
+        animate={controls}
+      >
+        <AsideMenuNavbar
+          onToggleLeftMenu={onToggleLeftMenu}
+          onToggleRightMenu={onToggleRightMenu}
+        />
+
         <Box
           as={motion.div}
-          w="calc(90% - 10px)"
-          maxH={{ base: 'initial', md: '100vh' }}
-          minH={{ base: '100%', md: 'initial' }}
-          bg="gray.200"
-          borderTopRadius="15px"
-          top="0"
-          ml="5px"
-          order="1"
-          position={{ base: 'absolute', md: 'sticky' }}
-          variants={{
-            init: {
-              x: 0,
-            },
-            center: {
-              x: 0,
-              transition,
-            },
-            left: {
-              x: '-90%',
-              transition,
-            },
-          }}
-          initial="init"
-          animate={controls}
-        >
-          <ul>
-            <li>
-              <MyButton
-                onClick={() => {
-                  if (isMobile) {
-                    onCloseLeftMenu()
-                    onCloseRightMenu()
-                    controls.start('center').then(() => router.push('/'))
-                  } else {
-                    router.push('/')
-                  }
-                }}
-              />
-            </li>
-            <li>
-              <MyButton
-                onClick={() => {
-                  if (isMobile) {
-                    onCloseLeftMenu()
-                    onCloseRightMenu()
-                    controls.start('center').then(() => router.push('/about'))
-                  } else {
-                    router.push('/about')
-                  }
-                }}
-              />
-            </li>
-          </ul>
-        </Box>
-        <Box
-          as={motion.div}
-          minH={{ base: 'initial', md: '100vh' }}
+          overflow={{ base: 'scroll', md: 'initial' }}
           h={{ base: '100%', md: 'initial' }}
-          borderTopRadius="15px"
+          px={{ base: '10px' }}
           w="100%"
-          bg="white"
-          order="2"
-          pos={{ base: 'absolute', md: 'static' }}
-          zIndex="10"
-          top="0"
-          variants={{
-            init: {
-              x: 0,
-            },
-            center: {
-              x: 0,
-              transition,
-            },
-            right: {
-              x: '90%',
-              transition,
-            },
-            left: {
-              x: '-90%',
-              transition,
-            },
-          }}
-          animate={controls}
-          initial="init"
-          onClick={handleClick}
+          initial={{ y: -16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          onTapStart={handleCloseMenu}
+          onClick={handleCloseMenu}
         >
-          <Box
-            w="100%"
-            h="40px"
-            position="fixed"
-            bg="white"
-            borderTopRadius="15px"
-            display={{ base: 'block', md: 'none' }}
-          >
-            <Box
-              display={{ base: 'block', md: 'none' }}
-              pos="absolute"
-              top="0"
-              left="0"
-              onClick={onToggleLeftMenu}
-            >
-              <HamburgerIcon />
-            </Box>
+          {children}
 
-            <Box
-              display={{ base: 'block', md: 'none' }}
-              pos="absolute"
-              top="0"
-              right="0"
-              onClick={onToggleRightMenu}
-            >
-              <AttachmentIcon />
-            </Box>
-          </Box>
-
-          <Box
-            as={motion.div}
-            h="100%"
-            w="100%"
-            p="50px"
-            overflow={{ base: 'scroll', md: 'initial' }}
-            initial={{ y: -16, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-          >
-            {children}
-
-            <Box>footer</Box>
+          <Box border="1px" borderColor="red" h="100px">
+            footer
+            <br />
+            footer
+            <br />
+            footer
+            <br />
+            footer
+            <br />
           </Box>
         </Box>
+      </Box>
 
-        <Box
-          as={motion.div}
-          maxH={{ base: 'initial', md: '100vh' }}
-          minH={{ base: '100%', md: 'initial' }}
-          w="calc(90% - 10px)"
-          mr="5px"
-          bg="gray.200"
-          order="3"
-          borderTopRadius="15px"
-          pos={{ base: 'absolute', md: 'sticky' }}
-          top="0"
-          right="0"
-          zIndex="5"
-          initial="init"
-          variants={{
-            init: {
-              x: 0,
-            },
-            center: {
-              x: 0,
-              transition,
-            },
-            right: {
-              x: '90%',
-              transition,
-            },
-          }}
-          animate={controls}
-        >
-          hola
-        </Box>
+      <AsideMenu
+        order={3}
+        right={0}
+        animate={controls}
+        variants={{
+          init: {
+            x: 0,
+          },
+          center: {
+            x: 0,
+            transition,
+          },
+          right: {
+            x: '90%',
+            transition,
+          },
+        }}
+      >
+        hola
+      </AsideMenu>
 
-        <Box
-          as={motion.div}
-          display={{ base: 'block', md: 'none' }}
-          zIndex="20"
-          h="50px"
-          bg="black"
-          pos="absolute"
-          left="0"
-          right="0"
-          bottom="0"
-          borderTopRadius="md"
-          variants={{
-            init: {
-              y: '100%',
-            },
-            right: {
-              y: '0',
-              transition,
-            },
-            center: {
-              y: '100%',
-              transition,
-            },
-          }}
-          initial="init"
-          animate={controls}
-        ></Box>
-      </Flex>
-    </>
+      <Navbar
+        animate={controls}
+        variants={{
+          init: {
+            y: '100%',
+          },
+          right: {
+            y: '0',
+            transition,
+          },
+          center: {
+            y: '100%',
+            transition,
+          },
+        }}
+      />
+    </Flex>
   )
 }
 
