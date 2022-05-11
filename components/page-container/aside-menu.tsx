@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react'
+import { Box, useStyleConfig } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 
 interface AsideMenuProps {
@@ -13,9 +13,11 @@ interface AsideMenuProps {
 
 function AsideMenu(props: AsideMenuProps) {
   const { animate, variants, right, left, order, w, children } = props
+  const styles = useStyleConfig('CustomBadge')
   return (
     <Box
       as={motion.div}
+      variant={'CustomBadge'}
       maxH={{ base: 'initial', md: '100vh' }}
       minH={{ base: '100%', md: 'initial' }}
       // w base and mx base are related
@@ -23,7 +25,6 @@ function AsideMenu(props: AsideMenuProps) {
       mx={{ base: '5px', md: 0 }}
       mt={{ base: '5px', md: 0 }}
       borderTopRadius={{ base: 'lg', md: 0 }}
-      bg="gray.200"
       pos={{ base: 'absolute', md: 'sticky' }}
       top={0}
       right={right}
@@ -31,6 +32,7 @@ function AsideMenu(props: AsideMenuProps) {
       order={order}
       animate={animate}
       variants={variants}
+      bg="gray"
       initial="init"
     >
       {children}

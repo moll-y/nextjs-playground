@@ -1,10 +1,15 @@
+import { mode } from '@chakra-ui/theme-tools'
 import { extendTheme } from '@chakra-ui/react'
 
 const theme = extendTheme({
-  styles: {
-    global: (props) => ({
-      html: {},
-    }),
+  initialColorMode: 'light',
+  useSystemColorMode: false,
+  components: {
+    CustomBadge: {
+      baseStyle: ({ colorMode }) => ({
+        bg: colorMode === 'dark' ? 'green' : 'blue',
+      }),
+    },
   },
 })
 
