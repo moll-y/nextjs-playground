@@ -1,9 +1,10 @@
-import { Flex } from '@chakra-ui/react'
+import { Flex, useColorModeValue } from '@chakra-ui/react'
 import useMobileViewportHeight from 'hooks/use-mobile-viewport-height'
 
 function Viewport(props) {
   const { children } = props
   const mvh = useMobileViewportHeight()
+  const bg = useColorModeValue('gray.300', 'gray.800')
   return (
     <Flex
       mx="auto"
@@ -12,6 +13,7 @@ function Viewport(props) {
       minH={{ base: 'initial', md: '100vh' }}
       h={{ base: mvh(100), md: 'initial' }}
       overflow={{ base: 'hidden', md: 'visible' }}
+      bg={bg}
     >
       {children}
     </Flex>

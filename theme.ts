@@ -18,7 +18,7 @@ const theme = extendTheme({
           minH: { base: 'initial', md: '100vh' },
           pos: { base: 'absolute', md: 'static' },
           bg: {
-            base: colorMode === 'dark' ? 'red' : 'blue',
+            base: colorMode === 'dark' ? 'gray.700' : 'gray.100',
             md: colorMode === 'dark' ? 'green' : 'black',
           },
         }),
@@ -30,7 +30,7 @@ const theme = extendTheme({
           pos: { base: 'absolute', md: 'sticky' },
           overflowY: { base: 'hidden', md: 'auto' },
           bg: {
-            base: colorMode === 'dark' ? 'blue' : 'red',
+            base: colorMode === 'dark' ? 'gray.700' : 'gray.100',
             md: colorMode === 'dark' ? 'black' : 'green',
           },
         }),

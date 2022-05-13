@@ -15,7 +15,7 @@ export const mainLinks = [
 ]
 
 function Sidebar(props: any) {
-  const { onMenuItemClick } = props
+  const { onClickMenuItem } = props
   const router = useRouter()
 
   return (
@@ -27,7 +27,7 @@ function Sidebar(props: any) {
             console.log('prefetching: ', label)
             router.prefetch(href)
           }}
-          onClick={() => onMenuItemClick(href)}
+          onClick={() => onClickMenuItem(href)}
           key={label}
         >
           {label}

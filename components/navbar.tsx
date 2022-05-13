@@ -1,28 +1,43 @@
-import { Box, HStack, Center, useColorMode } from '@chakra-ui/react'
-import { SunIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  HStack,
+  Center,
+  useColorMode,
+  useColorModeValue,
+} from '@chakra-ui/react'
+import {
+  SunIcon,
+  LinkIcon,
+  SettingsIcon,
+  SearchIcon,
+  AtSignIcon,
+} from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
 
 function Navbar(props: any) {
-  const { animate, variants } = props
   const { toggleColorMode } = useColorMode()
+  const bg = useColorModeValue('white', 'gray.900')
   return (
     <Box
-      as={motion.div}
       display={{ base: 'block', md: 'none' }}
-      h={{ base: '50px', md: 0 }}
-      zIndex="20"
+      h={{ base: '50px' }}
       pos="absolute"
-      left="0"
-      right="0"
-      bottom="0"
-      initial="init"
-      variants={variants}
-      animate={animate}
-      bg="green"
+      zIndex={20}
+      left={0}
+      right={0}
+      bottom={0}
+      bg={bg}
+      {...props}
     >
       <HStack justify="space-between" display={{ base: 'flex', md: 'none' }}>
         <Center w="50px" h="50px" onClick={toggleColorMode}>
           <SunIcon />
+        </Center>
+        <Center w="50px" h="50px">
+          <SearchIcon />
+        </Center>
+        <Center w="50px" h="50px">
+          <AtSignIcon />
         </Center>
       </HStack>
     </Box>

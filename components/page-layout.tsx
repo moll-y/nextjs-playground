@@ -1,23 +1,15 @@
 import { useEffect } from 'react'
-
 import { useRouter } from 'next/router'
-import {
-  Box,
-  Button,
-  Flex,
-  useDisclosure,
-  useBreakpointValue,
-} from '@chakra-ui/react'
+import { Box, useDisclosure, useBreakpointValue } from '@chakra-ui/react'
 import { motion, useAnimation } from 'framer-motion'
 
-import Sidebar from 'components/sidebar'
 import Navbar from 'components/navbar'
-
-import Transition from 'components/transition'
+import Sidebar from 'components/sidebar'
 import Scrollable from 'components/scrollable'
+import Transition from 'components/transition'
 import Viewport from 'components/viewport'
-import WindowControls from 'components/window-controls'
-import Window from 'components/window'
+import WindowControls from 'components/window/window-controls'
+import Window from 'components/window/window'
 
 const transition = {
   type: 'spring',
@@ -26,17 +18,24 @@ const transition = {
 }
 
 const mainVariants = {
+  init: {
+    x: 0,
+    filter: 'brightness(1)',
+  },
   center: {
     x: 0,
     transition,
+    filter: 'brightness(1)',
   },
   right: {
     x: '90%',
     transition,
+    filter: 'brightness(0.5)',
   },
   left: {
     x: '-90%',
     transition,
+    filter: 'brightness(0.5)',
   },
 }
 
@@ -62,6 +61,20 @@ const rightMenuVariants = {
   },
 }
 
+const navbarVariants = {
+  init: {
+    y: '100%',
+  },
+  right: {
+    y: '0',
+    transition,
+  },
+  center: {
+    y: '100%',
+    transition,
+  },
+}
+
 function PageLayout(props: any) {
   const { children } = props
   const isMobile = useBreakpointValue({ base: true, md: false })
@@ -70,20 +83,20 @@ function PageLayout(props: any) {
 
   const {
     isOpen: isOpenLeftMenu,
-    onClose: onCloseLeftMenu,
-    onToggle: onToggleLeftMenu,
+    onClose: closeLeftMenu,
+    onToggle: toggleLeftMenu,
   } = useDisclosure({
-    onOpen: () => {
-      controls.start('right')
+    onOpen: async () => {
+      await controls.start('right')
     },
-    onClose: () => {
-      controls.start('center')
+    onClose: async () => {
+      await controls.start('center')
     },
   })
   const {
     isOpen: isOpenRightMenu,
-    onClose: onCloseRightMenu,
-    onToggle: onToggleRightMenu,
+    onClose: closeRightMenu,
+    onToggle: toggleRightMenu,
   } = useDisclosure({
     onOpen: () => {
       controls.start('left')
@@ -95,23 +108,23 @@ function PageLayout(props: any) {
 
   const handleCloseMenu = () => {
     if (isOpenLeftMenu) {
-      onCloseLeftMenu()
+      closeLeftMenu()
     }
 
     if (isOpenRightMenu) {
-      onCloseRightMenu()
+      closeRightMenu()
     }
   }
 
-  const handleMenuItemClick = (href: string) => {
-    onCloseLeftMenu()
+  const handleClickMenuItem = async (href: string) => {
+    closeLeftMenu()
 
     if (router.pathname === href) {
       return
     }
 
     if (isMobile) {
-      controls.start('center').then(() => router.push(href))
+      await controls.start('center').then(() => router.push(href))
     } else {
       router.push(href)
     }
@@ -122,9 +135,9 @@ function PageLayout(props: any) {
       return
     }
 
-    onCloseRightMenu()
-    onCloseLeftMenu()
-  }, [isMobile, onCloseLeftMenu, onCloseRightMenu])
+    closeRightMenu()
+    closeLeftMenu()
+  }, [isMobile, closeLeftMenu, closeRightMenu])
 
   return (
     <Viewport>
@@ -135,7 +148,7 @@ function PageLayout(props: any) {
         animate={controls}
         variants={leftMenuVariants}
       >
-        <Sidebar onMenuItemClick={handleMenuItemClick} />
+        <Sidebar onClickMenuItem={handleClickMenuItem} />
       </Window>
 
       <Window
@@ -164,44 +177,34 @@ function PageLayout(props: any) {
         zIndex={10}
         animate={controls}
         variants={mainVariants}
+        initial="init"
       >
         <WindowControls
-          onToggleLeftMenu={onToggleLeftMenu}
-          onToggleRightMenu={onToggleRightMenu}
+          onToggleLeftMenu={toggleLeftMenu}
+          onToggleRightMenu={toggleRightMenu}
         />
 
         <Transition>
-          <Scrollable onTapStart={handleCloseMenu} onClick={handleCloseMenu}>
+          <Scrollable
+            as={motion.div}
+            onTapStart={handleCloseMenu}
+            onClick={handleCloseMenu}
+          >
             {children}
+
             <Box border="1px" borderColor="red" h="100px">
               footer
-              <br />
-              footer
-              <br />
-              footer
-              <br />
-              footer
-              <br />
             </Box>
           </Scrollable>
         </Transition>
       </Window>
 
       <Navbar
+        as={motion.div}
         animate={controls}
-        variants={{
-          init: {
-            y: '100%',
-          },
-          right: {
-            y: '0',
-            transition,
-          },
-          center: {
-            y: '100%',
-            transition,
-          },
-        }}
+        variants={navbarVariants}
+        initial="init"
+        borderTopRadius={{ base: 'lg', md: 0 }}
       />
     </Viewport>
   )
