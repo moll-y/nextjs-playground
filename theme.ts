@@ -5,10 +5,36 @@ const theme = extendTheme({
   initialColorMode: 'light',
   useSystemColorMode: false,
   components: {
-    CustomBadge: {
-      baseStyle: ({ colorMode }) => ({
-        bg: colorMode === 'dark' ? 'green' : 'blue',
-      }),
+    Window: {
+      baseStyle: {
+        top: 0,
+        h: { base: '100%', md: 'initial' },
+        mt: { base: '5px', md: 0 },
+        borderTopRadius: { base: 'lg', md: 0 },
+      },
+      variants: {
+        static: ({ colorMode }) => ({
+          w: '100%',
+          minH: { base: 'initial', md: '100vh' },
+          pos: { base: 'absolute', md: 'static' },
+          bg: {
+            base: colorMode === 'dark' ? 'red' : 'blue',
+            md: colorMode === 'dark' ? 'green' : 'black',
+          },
+        }),
+        sticky: ({ colorMode }) => ({
+          w: { base: 'calc(90% - 10px)' },
+          mx: { base: '5px', md: 0 },
+          minH: { base: '100%', md: 'initial' },
+          maxH: { base: 'initial', md: '100vh' },
+          pos: { base: 'absolute', md: 'sticky' },
+          overflowY: { base: 'hidden', md: 'auto' },
+          bg: {
+            base: colorMode === 'dark' ? 'blue' : 'red',
+            md: colorMode === 'dark' ? 'black' : 'green',
+          },
+        }),
+      },
     },
   },
 })

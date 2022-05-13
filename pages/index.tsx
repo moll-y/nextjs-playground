@@ -1,9 +1,9 @@
-import PageContainer from 'components/page-container'
+import PageLayout from 'components/page-layout'
 import { Box } from '@chakra-ui/react'
 
 const Home: NextPage = () => {
   return (
-    <PageContainer>
+    <PageLayout>
       <Box h="200px" w="100%" bg="red">
         A
       </Box>
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       <Box h="200px" w="100%" bg="red">
         D
       </Box>
-    </PageContainer>
+    </PageLayout>
   )
 }
 

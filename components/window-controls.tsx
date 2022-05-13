@@ -1,7 +1,7 @@
-import { Box, HStack, Center, Flex, Stack, Spacer } from '@chakra-ui/react'
-import { HamburgerIcon, AttachmentIcon } from '@chakra-ui/icons'
+import { Box, HStack, Center } from '@chakra-ui/react'
+import { SunIcon, HamburgerIcon, AttachmentIcon } from '@chakra-ui/icons'
 
-function AsideMenuNavbar(props: any) {
+function WindowControls(props: any) {
   const { onToggleLeftMenu, onToggleRightMenu } = props
 
   return (
@@ -16,4 +16,4 @@ function AsideMenuNavbar(props: any) {
   )
 }
 
-export default AsideMenuNavbar
+export default WindowControls
