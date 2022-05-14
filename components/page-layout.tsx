@@ -1,6 +1,12 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Box, useDisclosure, useBreakpointValue } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Stack,
+  useDisclosure,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 import { motion, useAnimation } from 'framer-motion'
 
 import Navbar from 'components/navbar'
@@ -62,6 +68,9 @@ const rightMenuVariants = {
 }
 
 const navbarVariants = {
+  none: {
+    y: '0',
+  },
   init: {
     y: '100%',
   },
@@ -141,71 +150,76 @@ function PageLayout(props: any) {
 
   return (
     <Viewport>
-      <Window
-        variant="sticky"
-        left={0}
-        order={1}
-        animate={controls}
-        variants={leftMenuVariants}
-      >
-        <Sidebar onClickMenuItem={handleClickMenuItem} />
-      </Window>
-
-      <Window
-        variant="sticky"
-        right={0}
-        order={3}
-        animate={controls}
-        variants={rightMenuVariants}
-      >
-        <Scrollable>
-          <Box h="500px" w="100%">
-            A
-          </Box>
-          <Box h="500px" w="100%">
-            B
-          </Box>
-          <Box h="500px" w="100%">
-            C
-          </Box>
-        </Scrollable>
-      </Window>
-
-      <Window
-        variant="static"
-        order={2}
-        zIndex={10}
-        animate={controls}
-        variants={mainVariants}
-        initial="init"
-      >
-        <WindowControls
-          onToggleLeftMenu={toggleLeftMenu}
-          onToggleRightMenu={toggleRightMenu}
-        />
-
-        <Transition>
-          <Scrollable
-            as={motion.div}
-            onTapStart={handleCloseMenu}
-            onClick={handleCloseMenu}
-          >
-            {children}
-
-            <Box border="1px" borderColor="red" h="100px">
-              footer
-            </Box>
-          </Scrollable>
-        </Transition>
-      </Window>
-
       <Navbar
-        as={motion.div}
+        as={isMobile && motion.div}
         animate={controls}
         variants={navbarVariants}
         initial="init"
         borderTopRadius={{ base: 'lg', md: 0 }}
       />
+
+      <Flex w="100%" h="100%">
+        <Window
+          variant="sticky"
+          left={0}
+          order={1}
+          animate={controls}
+          variants={leftMenuVariants}
+          pt="50px"
+          w={{ md: '280px' }}
+        >
+          <Sidebar onClickMenuItem={handleClickMenuItem} />
+        </Window>
+
+        <Window
+          variant="sticky"
+          right={0}
+          order={3}
+          pt="50px"
+          animate={controls}
+          variants={rightMenuVariants}
+        >
+          <Scrollable>
+            <Box h="500px" w="100%">
+              A
+            </Box>
+            <Box h="500px" w="100%">
+              B
+            </Box>
+            <Box h="500px" w="100%">
+              C
+            </Box>
+          </Scrollable>
+        </Window>
+
+        <Window
+          variant="static"
+          order={2}
+          zIndex={10}
+          animate={controls}
+          variants={mainVariants}
+          initial="init"
+        >
+          <WindowControls
+            onToggleLeftMenu={toggleLeftMenu}
+            onToggleRightMenu={toggleRightMenu}
+          />
+
+          <Transition>
+            <Scrollable
+              as={motion.div}
+              onTapStart={handleCloseMenu}
+              onClick={handleCloseMenu}
+            >
+              {children}
+
+              <Box border="1px" borderColor="red" h="100px">
+                footer
+              </Box>
+            </Scrollable>
+          </Transition>
+        </Window>
+      </Flex>
     </Viewport>
   )
 }

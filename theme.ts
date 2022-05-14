@@ -19,11 +19,11 @@ const theme = extendTheme({
           pos: { base: 'absolute', md: 'static' },
           bg: {
             base: colorMode === 'dark' ? 'gray.700' : 'gray.100',
-            md: colorMode === 'dark' ? 'green' : 'black',
+            md: colorMode === 'dark' ? 'gray.800' : 'white',
           },
         }),
         sticky: ({ colorMode }) => ({
-          w: { base: 'calc(90% - 10px)' },
+          w: { base: 'calc(90% - 10px)', md: '350px' },
           mx: { base: '5px', md: 0 },
           minH: { base: '100%', md: 'initial' },
           maxH: { base: 'initial', md: '100vh' },
@@ -31,7 +31,7 @@ const theme = extendTheme({
           overflowY: { base: 'hidden', md: 'auto' },
           bg: {
             base: colorMode === 'dark' ? 'gray.700' : 'gray.100',
-            md: colorMode === 'dark' ? 'black' : 'green',
+            md: colorMode === 'dark' ? 'gray.800' : 'white',
           },
         }),
       },

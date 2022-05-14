@@ -11,25 +11,37 @@ import {
   SettingsIcon,
   SearchIcon,
   AtSignIcon,
+  ArrowBackIcon,
 } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
 
 function Navbar(props: any) {
-  const { toggleColorMode } = useColorMode()
-  const bg = useColorModeValue('white', 'gray.900')
+  const { toggleColorMode, colorMode } = useColorMode()
   return (
     <Box
-      display={{ base: 'block', md: 'none' }}
       h={{ base: '50px' }}
-      pos="absolute"
+      w={{ base: '100vw', md: '48em', lg: '62em', xl: '80em' }}
+      pos={{ base: 'absolute', md: 'fixed' }}
       zIndex={20}
-      left={0}
-      right={0}
-      bottom={0}
-      bg={bg}
+      left={{ base: 0, md: 'initial' }}
+      right={{ base: 0, md: 'initial' }}
+      bottom={{ base: 0, md: 'initial' }}
+      top={{ base: 'initial', md: 0 }}
+      bg={{
+        base: colorMode === 'dark' ? 'gray.900' : 'white',
+        md: colorMode === 'dark' ? 'gray.800' : 'white',
+      }}
       {...props}
     >
-      <HStack justify="space-between" display={{ base: 'flex', md: 'none' }}>
+      <HStack
+        justify="space-between"
+        w="100%"
+        h="100%"
+        display={{ base: 'flex' }}
+      >
+        <Center w="50px" h="50px" onClick={toggleColorMode}>
+          <ArrowBackIcon />
+        </Center>
         <Center w="50px" h="50px" onClick={toggleColorMode}>
           <SunIcon />
         </Center>
